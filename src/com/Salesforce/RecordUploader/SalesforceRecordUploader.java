@@ -16,8 +16,7 @@ import java.util.*;
 public class SalesforceRecordUploader {
     private static String sfEndpoint;
 
-    public static void main(String[] args)
-            throws AsyncApiException, ConnectionException, IOException {
+    public static void main(String[] args) throws AsyncApiException, ConnectionException, IOException {
 
         SalesforceRecordUploader scu = new SalesforceRecordUploader();
         Properties prop = scu.readProperties();
@@ -53,6 +52,7 @@ public class SalesforceRecordUploader {
                 e.printStackTrace();
             }
         }
+
         List<String> missingKeys = new ArrayList<String>();
         if(!prop.containsKey("sobjectType")) {
             missingKeys.add("sobjectType");
@@ -103,7 +103,7 @@ public class SalesforceRecordUploader {
      * Gets the results of the operation and checks for errors.
      */
     private void checkResults(BulkConnection connection, JobInfo job, List<BatchInfo> batchInfoList)
-            throws AsyncApiException, IOException {
+        throws AsyncApiException, IOException {
 
         for (BatchInfo b : batchInfoList) {
             CSVReader rdr = new CSVReader(connection.getBatchResultStream(job.getId(), b.getId()));
@@ -133,7 +133,7 @@ public class SalesforceRecordUploader {
     }
 
     private void closeJob(BulkConnection connection, String jobId)
-            throws AsyncApiException {
+        throws AsyncApiException {
 
         JobInfo job = new JobInfo();
         job.setId(jobId);
@@ -150,13 +150,14 @@ public class SalesforceRecordUploader {
      * @throws AsyncApiException
      */
     private void awaitCompletion(BulkConnection connection, JobInfo job, List<BatchInfo> batchInfoList)
-            throws AsyncApiException {
+        throws AsyncApiException {
+
         long totalProcessingTime = 0L;
         long apiActiveProcessingTime = 0L;
         long apexProcessingTime = 0L;
         long sleepTime = 0L;
-        Set<String> incomplete = new HashSet<String>();
 
+        Set<String> incomplete = new HashSet<String>();
         for (BatchInfo bi : batchInfoList) {
             incomplete.add(bi.getId());
         }
@@ -213,7 +214,7 @@ public class SalesforceRecordUploader {
      * Create the BulkConnection used to call Bulk API operations.
      */
     private BulkConnection getBulkConnection(String userName, String password)
-            throws ConnectionException, AsyncApiException {
+        throws ConnectionException, AsyncApiException {
 
         ConnectorConfig partnerConfig = new ConnectorConfig();
         partnerConfig.setUsername(userName);
@@ -246,7 +247,7 @@ public class SalesforceRecordUploader {
      * @param csvFileName The source file for batch data
      */
     private List<BatchInfo> createBatchesFromCSVFile(BulkConnection connection, JobInfo jobInfo, String csvFileName)
-            throws IOException, AsyncApiException {
+        throws IOException, AsyncApiException {
 
         List<BatchInfo> batchInfos = new ArrayList<BatchInfo>();
         BufferedReader rdr = null;
@@ -315,7 +316,7 @@ public class SalesforceRecordUploader {
      * @param jobInfo The JobInfo associated with the new batch.
      */
     private void createBatch(FileOutputStream tmpOut, File tmpFile, List<BatchInfo> batchInfos,
-                             BulkConnection connection, JobInfo jobInfo) throws IOException, AsyncApiException {
+        BulkConnection connection, JobInfo jobInfo) throws IOException, AsyncApiException {
 
         tmpOut.flush();
         tmpOut.close();
